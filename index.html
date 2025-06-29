@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>NightDashboard</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Courier+Prime&display=swap');
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html, body {
+      width: 100vw;
+      height: 100vh;
+      background-color: black;
+      color: white;
+      font-family: 'Courier Prime', monospace;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: flex-start;
+      padding: 40px;
+      font-size: 1.6em;
+    }
+
+    .section {
+      margin-bottom: 25px;
+      text-align: left;
+      width: 100%;
+    }
+
+    #clock {
+      font-size: 3em;
+      color: white;
+    }
+
+ #progress-container {
+  border: 2px solid white; /* borde blanco de 2px */
+  border-radius: 6px;      /* mantiene las esquinas redondeadas */
+  width: 60%;              /* o el ancho que quieras */
+  height: 12px;
+  background: #333;
+  overflow: hidden;
+  margin-bottom: 30px;     /* si quieres espacio abajo */
+}
+
+
+    #progress-bar {
+      height: 100%;
+      background-color: white;
+      width: 0%;
+    }
+  </style>
+</head>
+<body>
+  <div class="section" id="hello">Hello</div>
+  <div class="section" id="clock"></div>
+  <div class="section" id="date"></div>
+  <div class="section" id="year-info"></div>
+  <div id="progress-container"><div id="progress-bar"></div></div>
+  <div class="section" id="quote"></div>
+  <div class="section" id="name">This space belongs to Diego Alejandro</div>
+
+  <script>
+    const quotes = [
+      "Stay hungry, stay foolish. – Steve Jobs",
+      "The obstacle is the way. – Marcus Aurelius",
+      "Know thyself. – Socrates",
+      "I can do this all day. – Steve Rogers",
+      "Sometimes it's the people no one imagines anything of who do the things no one can imagine. – Alan Turing",
+      "It’s not who I am underneath, but what I do that defines me. – Bruce Wayne",
+      "We are what we repeatedly do. Excellence, then, is not an act, but a habit. – Aristotle",
+      "The only limit to our realization of tomorrow is our doubts of today. – Franklin D. Roosevelt",
+      "Genius is 1% inspiration and 99% perspiration. – Thomas Edison",
+      "Knowing yourself is the beginning of all wisdom. – Aristotle",
+      "Don't waste your time living someone else's life. – Steve Jobs",
+      "The unexamined life is not worth living. – Socrates",
+      "I am Iron Man. – Tony Stark",
+      "You either die a hero or live long enough to see yourself become the villain. – Harvey Dent",
+      "He who opens a school door, closes a prison. – Victor Hugo",
+      "Happiness depends upon ourselves. – Aristotle",
+      "It’s not the years in your life that count. It’s the life in your years. – Abraham Lincoln",
+      "Act as if what you do makes a difference. It does. – William James",
+      "Success is not final, failure is not fatal: It is the courage to continue that counts. – Winston Churchill",
+      "Don’t count the days, make the days count. – Muhammad Ali",
+      "In the middle of difficulty lies opportunity. – Albert Einstein",
+      "A wise man speaks because he has something to say; a fool because he has to say something. – Plato",
+      "The way to get started is to quit talking and begin doing. – Walt Disney",
+      "All we have to decide is what to do with the time that is given us. – Gandalf",
+      "The harder you work for something, the greater you'll feel when you achieve it.",
+      "Dwell on the beauty of life. Watch the stars, and see yourself running with them. – Marcus Aurelius",
+      "Courage is knowing what not to fear. – Plato",
+      "A man who has committed a mistake and doesn't correct it is committing another mistake. – Confucius",
+      "What we achieve inwardly will change outer reality. – Plutarch",
+      "You must be the change you wish to see in the world. – Gandhi",
+      "Be yourself; everyone else is already taken. – Oscar Wilde",
+      "If you’re going through hell, keep going. – Winston Churchill",
+      "The best way to predict the future is to invent it. – Alan Kay",
+      "Do, or do not. There is no try. – Yoda",
+      "Fall seven times, stand up eight. – Japanese Proverb",
+      "Our life is what our thoughts make it. – Marcus Aurelius",
+      "Don’t let your happiness depend on something you may lose. – C.S. Lewis",
+      "The future depends on what you do today. – Gandhi",
+      "Fortune favors the brave. – Virgil",
+      "Your time is limited, so don’t waste it living someone else’s life. – Steve Jobs",
+      "The mind is everything. What you think you become. – Buddha",
+      "Simplicity is the ultimate sophistication. – Leonardo da Vinci",
+      "Work hard in silence. Let your success be your noise.",
+      "You don't need permission to be great.",
+      "A goal without a plan is just a wish. – Antoine de Saint-Exupéry",
+      "You can’t build a reputation on what you are going to do. – Henry Ford",
+      "Live as if you were to die tomorrow. Learn as if you were to live forever. – Gandhi",
+      "Believe you can and you're halfway there. – Theodore Roosevelt",
+      "It's not about how hard you hit. It's about how hard you can get hit and keep moving forward. – Rocky Balboa"
+    ];
+
+    function updateDashboard() {
+      const now = new Date();
+
+      // Reloj 24h con segundos
+      const h = String(now.getHours()).padStart(2, '0');
+      const m = String(now.getMinutes()).padStart(2, '0');
+      const s = String(now.getSeconds()).padStart(2, '0');
+      document.getElementById("clock").textContent = `${h}:${m}:${s}`;
+
+      // Fecha
+      const options = { weekday: 'long', month: 'long', day: 'numeric' };
+      document.getElementById("date").textContent = now.toLocaleDateString('en-US', options);
+
+      // Día del año y progreso
+      const start = new Date(now.getFullYear(), 0, 0);
+      const diff = now - start;
+      const oneDay = 1000 * 60 * 60 * 24;
+      const day = Math.floor(diff / oneDay);
+      const totalDays = (new Date(now.getFullYear(), 11, 31) - start) / oneDay;
+      const left = Math.floor(totalDays - day);
+      const percent = Math.floor((day / totalDays) * 100);
+
+      document.getElementById("year-info").textContent =
+        `Day ${day} of ${Math.floor(totalDays)}\nDays left: ${left}\nYear: ${percent}%`;
+
+      document.getElementById("progress-bar").style.width = percent + "%";
+
+      // Frase motivacional según la hora
+      const quoteIndex = now.getHours() % quotes.length;
+      document.getElementById("quote").textContent = quotes[quoteIndex];
+    }
+
+    updateDashboard();
+    setInterval(updateDashboard, 1000); // actualiza cada segundo
+  </script>
+</body>
+</html>
